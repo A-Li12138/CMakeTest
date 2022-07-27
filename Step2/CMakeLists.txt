@@ -7,8 +7,15 @@ project(Tutorial VERSION 3.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# 包含二级目录
-add_subdirectory(MathFunctions)
+option(USE_MY_MATH "自己的数学库" ON)
+
+if (USE_MY_MATH)
+    # 包含二级目录
+    add_subdirectory(MathFunctions)
+    list(APPEND EXTRA_LIBS MathFunctions)
+    list(APPEND EXTRA_INCLUDES ${CMAKE_SOURCE_DIR}/MathFunctions)
+endif()
+
 
 # 添加执行文件
 add_executable(Tutorial tutorial.cxx)
@@ -26,12 +33,13 @@ endif()
 # 连接静态库
 target_link_libraries(
     Tutorial PUBLIC 
-    MathFunctions
+    ${EXTRA_LIBS}
 )
 
 # 将文件添加到生成树中
 target_include_directories(
     Tutorial PUBLIC 
     ${PROJECT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/MathFunctions
+    ${EXTRA_INCLUDES}
     )
+ 
